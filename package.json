@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/oniso20/NASA-spaceship-launch-control#readme",
   "dependencies": {
+    "mongoose": "^6.4.0",
     "morgan": "^1.10.0"
   }
 }
