@@ -7,7 +7,7 @@ const { loadPlanetsData } = require('./models/planets.model')
 
 const PORT = process.env.PORT || 8000;
 
-const MONGO_URL = 'mongodb+srv://nasa-space-explorer-api:HkeQH3AbMy9rJvSZ@nasa-space-explorer-clu.tofth.mongodb.net/?retryWrites=true&w=majority';
+const MONGO_URL = 'mongodb+srv://nasa-space-explorer-api:HkeQH3AbMy9rJvSZ@nasa-space-explorer-clu.tofth.mongodb.net/NASA-Habitable-Planets?retryWrites=true&w=majority';
 
 const server = http.createServer(app);
 
