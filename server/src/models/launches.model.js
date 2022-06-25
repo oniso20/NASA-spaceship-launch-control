@@ -1,41 +1,80 @@
-// const launches = require('./launches.mongo');
+const launchesDataBase = require('./launches.mongo');
+const planets = require('./planets.mongo');
+
+const DEFAULT_FLIGHT_NUMBER = 100;
 
 const launches = new Map();
-
-let latestFlightNumber = 100;
 
 const launch = {
     flightNumber: 100,  //Starts the flight number count from 100
     mission: 'Kepler Exploration X',
     rocket: 'Explore IS1',
     launchDate: new Date('December 27, 2030'),
-    target: 'kepler-442 b',
+    target: 'Kepler-442 b',
     customers: ['NASA', 'USA-Army'],
     upcoming: true,
     success: true
 }
 
-launches.set(launch.flightNumber, launch);
+saveLaunch(launch);
 
 function existsLaunchWithId(launchId) {
     return launches.has(launchId);
 }
 
-function getAllLaunches() {
-    return Array.from(launches.values());
+async function getLatestFlightNumber() {
+    const latestLaunch = await launchesDataBase
+        .findOne({})
+        //SOrt in descending order
+        .sort('-flightNumber');
+
+        if (!latestLaunch) {
+            return DEFAULT_FLIGHT_NUMBER;
+        }
+    
+        return latestLaunch.flightNumber;
 }
 
-function addNewLaunch(launch) {
-    latestFlightNumber++;
-    launches.set(
-        launch.flightNumber, 
-        Object.assign(launch, {
-            success: true,
-            upcoming: true,
-            customers: ['SpaceX', 'OnisXPO', 'NASA'],
-            flightNumber: latestFlightNumber,
-         })
-    );
+async function getAllLaunches() {
+    return await launchesDataBase.find({}, {
+        '_id': 0,
+        '__v': 0,
+    });
+}
+
+async function saveLaunch(launch) {
+    try{
+        const planet = await planets.findOne({
+            keplerName: launch.target,
+        });
+
+        if (!planet) {
+            throw new Error('No matching planet found');
+        }
+
+        await launchesDataBase.findOneAndUpdate({
+            //Check the flightNumber if it exists already
+            flightNumber: launch.flightNumber,
+        },
+        launch, {
+          upsert: true,  
+        });
+    } catch(err) {
+        console.error(`Could not save launch ${err}`)
+    }
+}
+
+async function scheduleNewLaunch(launch) {
+    const newFlightNumber = await getLatestFlightNumber() + 1;
+
+    const newLaunch = Object.assign(launch, {
+        success: true,
+        upcoming: true,
+        customers: ['SpaceX', 'OnisXPO', 'NASA'],
+        flightNumber: newFlightNumber,
+    });
+
+    await saveLaunch(newLaunch);
 }
 
 function abortLaunchById(launchId) {
@@ -48,6 +87,6 @@ function abortLaunchById(launchId) {
 module.exports = {
     existsLaunchWithId,
     getAllLaunches,
-    addNewLaunch,
+    scheduleNewLaunch,
     abortLaunchById,
 }
