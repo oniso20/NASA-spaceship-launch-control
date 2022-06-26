@@ -3,8 +3,6 @@ const planets = require('./planets.mongo');
 
 const DEFAULT_FLIGHT_NUMBER = 100;
 
-const launches = new Map();
-
 const launch = {
     flightNumber: 100,  //Starts the flight number count from 100
     mission: 'Kepler Exploration X',
@@ -18,8 +16,10 @@ const launch = {
 
 saveLaunch(launch);
 
-function existsLaunchWithId(launchId) {
-    return launches.has(launchId);
+async function existsLaunchWithId(launchId) {
+    return await launchesDataBase.findOne({
+        flightNumber: launchId,
+    });
 }
 
 async function getLatestFlightNumber() {
@@ -43,25 +43,21 @@ async function getAllLaunches() {
 }
 
 async function saveLaunch(launch) {
-    try{
-        const planet = await planets.findOne({
-            keplerName: launch.target,
-        });
+    const planet = await planets.findOne({
+        keplerName: launch.target,
+    });
 
-        if (!planet) {
-            throw new Error('No matching planet found');
-        }
-
-        await launchesDataBase.findOneAndUpdate({
-            //Check the flightNumber if it exists already
-            flightNumber: launch.flightNumber,
-        },
-        launch, {
-          upsert: true,  
-        });
-    } catch(err) {
-        console.error(`Could not save launch ${err}`)
+    if (!planet) {
+        throw new Error('No matching planet found');
     }
+
+    await launchesDataBase.findOneAndUpdate({
+        //Check the flightNumber if it exists already
+        flightNumber: launch.flightNumber,
+    },
+    launch, {
+        upsert: true,  
+    });
 }
 
 async function scheduleNewLaunch(launch) {
@@ -77,11 +73,15 @@ async function scheduleNewLaunch(launch) {
     await saveLaunch(newLaunch);
 }
 
-function abortLaunchById(launchId) {
-   const aborted = launches.get(launchId); 
-   aborted.upcoming = false;
-   aborted.success = false;
-   return aborted;
+async function abortLaunchById(launchId) {
+    const aborted = await launchesDataBase.updateOne({
+        flightNumber: launchId,
+    }, {
+        upcoming: false,
+        success: false,
+    });
+
+    return aborted.modifiedCount === 1;;
 }
 
 module.exports = {
