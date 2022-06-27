@@ -3,8 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 
-const planetsRouter = require('./routes/planets/planets.router');
-const launchesRouter = require('./routes/launches/launches.router')
+const api = require('./routes/api')
 
 const app = express();
 
@@ -21,11 +20,10 @@ app.use(express.json());
 //serving the client side with express.static()
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-//Routers
-app.use('/planets', planetsRouter);
-app.use('/launches', launchesRouter);
+//Route and api version
+app.use('/v1' ,api);
 
-// getting the launch page from the root route
+//Front End/ getting the launch page from the root route
 app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, "..", "public", "index.html"))
 })
