@@ -1,16 +1,16 @@
-# My Awesome Project
+# NASA Space Explorer Project
 
 NASA planet explorer mission control dashboard for scheduling rocket launches, aborting rocket launches, checking habitable planets in space, checking upcoming launches data and viewing historical rocket launches.
 
 **Link to project:** STILL ON IT
 
-![alt tag](img\NASA-img.PNG?raw=true "Site in progress image")
+![alt tag](img\NASA-img.PNG?raw=true 'Site in progress image')
 
 ## How It's Made:
 
 **Tech used:** HTML, CSS, JavaScript, Node.js, Express, MongoDB, Jest
 
-![alt tag](img\NASA-mc.png?raw=true "Site Architecture")
+![alt tag](img\NASA-mc.png?raw=true 'Site Architecture')
 
 ## Lessons Learned:
 
