@@ -4,7 +4,7 @@ NASA planet explorer mission control dashboard for scheduling rocket launches, a
 
 **Link to project:** STILL ON IT
 
-![alt tag](img\NASA-img.PNG?raw=true 'Site in progress image')
+![alt tag](img\NASA-img.png?raw=true 'Site in progress image')
 
 ## How It's Made:
 
