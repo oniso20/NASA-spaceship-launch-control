@@ -1,5 +1,4 @@
 const axios = require('axios');
-
 const launchesDataBase = require('./launches.mongo');
 const planets = require('./planets.mongo');
 
@@ -20,8 +19,6 @@ const launch = {
 saveLaunch(launch);
 
 const SPACEX_API_URL = 'https://api.spacexdata.com/v4/launches/query'
-
-console.log('abc')
 
 async function loadLaunchData() {
     console.log('Downloading launch data...');
